@@ -37,6 +37,8 @@ sub process_route {
   my $controller = $route->to->{controller} || 'unknown';
   my $action     = $route->to->{action}     || 'unknown';
 
+  say "";
+  say "-" x 72;
   say "$name / $method => $controller->$action";
   process_module_method($controller, $action);
 
@@ -47,6 +49,7 @@ sub process_route {
 
 sub process_module_method {
   my ($module, $method) = @_;
+
 
   NS: foreach my $ns (@$namespaces) {
     my $this_module = "${ns}::$module";
@@ -59,13 +62,22 @@ sub process_module_method {
     next unless ($INC{$path});
 
     my $pom = $parser->parse_file($INC{$path});
+    my $view = 'Swagger::JSON';
+
     foreach my $head2 ($pom->head2()) {
       next unless ($head2->title eq $method);
-      say "METHOD: ". $head2->title;
-      say "DOC: "   . $head2->content;
+
+      say $head2->present($view);
       last NS;
     }
   }
 }
+
+package Swagger::JSON;
+
+use base qw( Pod::POM::View );
+
+sub view { return "MAKE SOME JSON HAPPEN HERE"; }
+
 
 1;
