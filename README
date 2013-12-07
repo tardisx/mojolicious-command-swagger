@@ -1,0 +1,11 @@
+$ perl Makefile.PL
+$ make
+$ sudo make install
+
+$ cd /some/dir/your_app
+
+Document your REST API with POD in source.
+
+$ script/your_app swagger > resources.json
+
+Go open resources.json via swagger-ui
